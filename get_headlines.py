@@ -2,7 +2,7 @@ import requests
 from bs4 import BeautifulSoup
 
 # Open the file containing URLs
-with open('urls.txt', 'r') as f:
+with open('tab_urls.txt', 'r') as f:
     urls = f.readlines()
 
 # Retrieve the headlines from each URL and save them to a new file
