@@ -11,6 +11,7 @@ with open("headlines.txt", "r") as f:
 
 # Define the prompt
 prompt_template = "Make a headline similar to {} and make sure the headline is unique from previous entries. Please also make sure that generated headlines use the same numbers."
+headline_history = []
 
 # Loop through each headline and generate 3 similar headlines
 with open("gpt_headlines.txt", "w") as f:
@@ -41,11 +42,41 @@ with open("gpt_headlines.txt", "w") as f:
             generated_headline = response.text.strip().format(numbers) if numbers else response.text.strip()
             # Ensure that the numbers in the generated headline are the same as the numbers in the original headline
             if numbers:
-                # assert re.search(r"\d+", generated_headline).group(0) == numbers, f"Numbers in generated headline don't match numbers in original headline: {headline} -> {generated_headline}"
-                # get generated numbers
-                generated_numbers = re.search(r"\d+", generated_headline).group(0)
-                # replace generated numbers with original numbers
-                generated_headline = generated_headline.replace(generated_numbers, numbers)
+                generated_numbers = re.findall(r'[0-9]+', generated_headline)
+                if(len(generated_numbers) == 0):
+                    print("Error: No numbers found in generated headline")
+                elif(generated_numbers[0] != numbers):
+                    print("MISMATCH ALERT! {} vs {}".format(headline, generated_headline))
+                    print("Regex Replacing...")
+                    # replace generated numbers with original numbers
+                    generated_headline = generated_headline.replace(generated_numbers[0], numbers)
+            
+            headline_history.append(generated_headline)
+
+            # check if generated headline is unique
+            while(generated_headline in headline_history):
+                print("Error: Duplicate headline found")
+                print("Regenerating headline...")
+                # generate new headline
+                replace_prompt = "Make a headline similar to {} and make sure the headline is unique from previous entries. Please also make sure that generated headlines use the same numbers."
+                responses = openai.Completion.create(
+                        engine="text-davinci-002",
+                        prompt=prompt,
+                        max_tokens=60,
+                        n=1,
+                        stop=None,
+                        temperature=0.8,)
+                generated_headline = responses.choices[0].text.strip().format(numbers) if numbers else responses.choices[0].text.strip()
+                if numbers:
+                    generated_numbers = re.findall(r'[0-9]+', generated_headline)
+                    if(len(generated_numbers) == 0):
+                        print("Error: No numbers found in generated headline {}".format(generated_headline))
+                    elif(generated_numbers[0] != numbers):
+                        print("MISMATCH ALERT! {} vs {}".format(headline, generated_headline))
+                        print("Regex Replacing...")
+                        # replace generated numbers with original numbers
+                        generated_headline = generated_headline.replace(generated_numbers[0], numbers)
+            headline_history.append(generated_headline)
             f.write(f"{generated_headline}\n")
         f.write("\n")
 
