@@ -9,13 +9,11 @@ files = os.listdir(current_dir)
 # Filter the list to only include text files
 text_files = [f for f in files if f.endswith(".txt")]
 
-# Make sure there is exactly one text file
-if len(text_files) != 1:
-    print("Error: There should be exactly one text file in the current directory")
-    exit()
+# select the file named folder_names.txt
+folder_names = [f for f in text_files if f == "folder_names.txt"]
 
 # Get the path to the text file
-path_to_file = os.path.join(current_dir, text_files[0])
+path_to_file = os.path.join(current_dir, folder_names[0])
 
 # Open the text file for reading
 with open(path_to_file, "r") as file:
