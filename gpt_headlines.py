@@ -55,7 +55,7 @@ with open("gpt_headlines.txt", "w") as f:
 
             # check if generated headline is unique
             while(generated_headline in headline_history):
-                print("Error: Duplicate headline found")
+                print("DUPLICATE! {}".format(generated_headline))
                 print("Regenerating headline...")
                 # generate new headline
                 replace_prompt = "Make a headline similar to {} and make sure the headline is unique from previous entries. Please also make sure that generated headlines use the same numbers."
@@ -76,8 +76,8 @@ with open("gpt_headlines.txt", "w") as f:
                         print("Regex Replacing...")
                         # replace generated numbers with original numbers
                         generated_headline = generated_headline.replace(generated_numbers[0], numbers)
-            headline_history.append(generated_headline)
-            f.write(f"{generated_headline}\n")
-        f.write("\n")
 
+            f.write(f"{generated_headline}\n")
+            headline_history.append(generated_headline)
+        f.write("\n")
 print("Done!")
