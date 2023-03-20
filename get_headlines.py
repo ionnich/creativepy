@@ -1,8 +1,12 @@
 import requests
+import os
 from bs4 import BeautifulSoup
 
-# Open the file containing URLs
-with open('tab_urls.txt', 'r') as f:
+
+# filter for files that contain "tab_urls" in the name
+tab_urls = [f for f in os.listdir('.') if 'tab_urls' in f]
+
+with open (tab_urls[0], 'r') as f:
     urls = f.readlines()
 
 # Retrieve the headlines from each URL and save them to a new file

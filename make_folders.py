@@ -6,8 +6,11 @@ current_dir = os.getcwd()
 # Get a list of all files in the current directory
 files = os.listdir(current_dir)
 
-# Filter the list to only include text files
-text_files = [f for f in files if f == "campaign_names.txt"]
+# filter for files containing "campaign_names" in the name
+campaign_names = [f for f in files if 'campaign_names' in f]
+
+# Filter the list to only include only the first campaign_name
+text_files = [f for f in campaign_names if f.endswith('.txt')]
 
 # Get the path to the text file
 path_to_file = os.path.join(current_dir, text_files[0])
